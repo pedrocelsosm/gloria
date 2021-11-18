@@ -8,7 +8,7 @@ use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TLabel;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-class EstadoForm extends TPage
+class CidadeForm extends TPage
 {
     protected $form;
 
@@ -19,30 +19,35 @@ class EstadoForm extends TPage
         parent::__construct();
 
         parent::setTargetContainer('adianti_right_panel');
-        $this->setAfterSaveAction(new TAction(['EstadoList', 'onReload'], ['register_state' => 'true']) );
+        $this->setAfterSaveAction(new TAction(['CidadeList', 'onReload'], ['register_state' => 'true']) );
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Estado');
+        $this->setActiveRecord('Cidade');
 
-        $this->form = new BootstrapFormBuilder('form_Estado');
-        $this->form->setFormTitle('Estado');
+        $this->form = new BootstrapFormBuilder('form_Cidade');
+        $this->form->setFormTitle('Cidades');
         $this->form->setClientValidation(true);
         $this->form->setColumnClasses(2, ['col-sm-5 col-lg-4', 'col-sm-7 col-lg-8']);
 
         $id = new TEntry('id');
         $nome = new TEntry('nome');
-        $uf = new TEntry('uf');
+        $codigo_ibge = new TEntry('codigo_ibe');
+        $estado_id = new TEntry('estado_id');
 
         $this->form->addFields([ new TLabel('Id')], [$id]);
         $this->form->addFields([ new TLabel('Nome')], [$nome]);
-        $this->form->addFields([ new TLabel('UF')], [$uf]);
+        $this->form->addFields([ new TLabel('Código IBGE')], [$codigo_ibge]);
+        $this->form->addFields([ new TLabel('Estado')], [$estado_id]);
 
-        $uf->addValidation('Uf', new TRequiredValidator);
         $nome->addValidation('Nome', new TRequiredValidator);
+        $codigo_ibge->addValidation('Código IBGE', new TRequiredValidator);
+        $estado_id->addValidation('Estado', new TRequiredValidator);
+
 
         $id->setSize('100%');
         $nome->setSize('100%');
-        $uf->setSize('100%');
+        $codigo_ibge->setSize('100%');
+        $estado_id->setSize('100%');
 
         $id->setEditable(FALSE);
 
