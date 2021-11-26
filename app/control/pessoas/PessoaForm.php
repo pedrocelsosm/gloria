@@ -58,7 +58,7 @@ class PessoaForm extends TWindow
         $filter->add(new TFilter('id', '<', '0'));
         $cidade_id = new TDBCombo('cidade_id', 'db_condominio', 'Cidade', 'id', 'nome', 'nome', $filter);
         $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');
-        $papel_id = new TDBMultiSearch('papel_id', 'db_condominio', 'Papel', 'id', 'nome');
+        $papeis_id = new TDBMultiSearch('papeis_id', 'db_condominio', 'Papel', 'id', 'nome');
         $estado_id = new TDBCombo('estado_id', 'db_condominio', 'Estado', 'id', '{nome} {uf}');
 
         $estado_id->setChangeAction(new TAction([$this, 'onChangeEstado']));
@@ -68,8 +68,8 @@ class PessoaForm extends TWindow
         $cidade_id->enableSearch();
         $estado_id->enableSearch();
         $grupo_id-> setMinLength(0);
-        $papel_id->setMinLength(0);
-        $papel_id->setSize('100%', 60);
+        $papeis_id->setMinLength(0);
+        $papeis_id->setSize('100%', 60);
         $observacao->setSize('100%', 60);
         $tipo->addItems( ['F' => 'Física', 'J' => 'Jurídica']);
 
@@ -78,7 +78,7 @@ class PessoaForm extends TWindow
         $this->form->addFields( [new TLabel('Tipo')], [ $tipo ], [new TLabel('CPF/CNPJ')], [ $codigo_nacional ] );
         $this->form->addFields( [new TLabel('Nome')], [ $nome ] );
         $this->form->addFields( [new TLabel('Nome Fantasia')], [ $nome_fantasia ] );
-        $this->form->addFields( [new TLabel('Papel')], [ $papel_id ], [new TLabel('Grupo')], [ $grupo_id ] );
+        $this->form->addFields( [new TLabel('Papel')], [ $papeis_id ], [new TLabel('Grupo')], [ $grupo_id ] );
         $this->form->addFields( [new TLabel('I. E.')], [ $codigo_estadual ], [new TLabel('I. M.')], [ $codigo_municpal ] );
         $this->form->addFields( [new TLabel('Fone')], [ $fone ], [new TLabel('Email')], [ $email ] );
         $this->form->addFields( [new TLabel('Observação')], [ $observacao ] );
@@ -158,7 +158,7 @@ class PessoaForm extends TWindow
             {
                 foreach ($data->papeis_id as $papel_id)
                 {
-                    $pp = new PessoalPapel;
+                    $pp = new PessoaPapel;
                     $pp->pessoa_id = $object->id;
                     $pp->papel_id = $papel_id;
                     $pp->store();
@@ -187,18 +187,19 @@ class PessoaForm extends TWindow
 
     public function onEdit($param)
     {
-        try{
+        try
+        {
             if (isset($param['key']))
             {
                 $key = $param['key'];
                 TTransaction::open('db_condominio');
                 $object = new Pessoa($key);
 
-                $object->papel_id = PessoaPapel::where('pessoa_id', '=', $object->id)->getIndexedArray('papel_id');
+                $object->papeis_id = PessoaPapel::where('pessoa_id', '=', $object->id)->getIndexedArray('papel_id');
                 $this->form->setData($object);
 
                 $data = new stdClass;
-                $data->estado_id = $object->cidade->estado_id;
+                $data->estado_id = $object->cidade->estado->id;
                 $data->cidade_id = $object->cidade_id;
                 TForm::sendData('form_Pessoa', $data);
 
@@ -261,7 +262,7 @@ class PessoaForm extends TWindow
                 {
                     $data->tipo = 'J';
                     $data->nome = $cnpj_data->nome;
-                    $data->nome_fantasia = !empty($cnpj_data->fantasia) ? $cnpj_data->fantasia : $cnpj_data->mome;
+                    $data->nome_fantasia = !empty($cnpj_data->fantasia) ? $cnpj_data->fantasia : $cnpj_data->nome;
 
                     if (!empty($param['cep']))
                     {
