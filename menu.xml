@@ -27,6 +27,10 @@
         <action>VeiculoList</action>
         <icon>fas:car-alt fa-fw #ffa500</icon>
       </menuitem>
+      <menuitem label="Cadastro Animal">
+        <action>AnimalList</action>
+        <icon>fas:dog fa-fw #ffa500</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">

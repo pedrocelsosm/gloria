@@ -12,6 +12,6 @@ class PessoaPapel extends TRecord
     {
         parent::__construct($id, $callObjectLoad);
         parent::addAttribute('pessoa_id');
-        parent::addAttribute('grupo_id');
+        parent::addAttribute('papel_id');
     }
 }

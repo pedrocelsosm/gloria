@@ -16,7 +16,7 @@ use Adianti\Widget\Wrapper\TDBUniqueSearch;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-class VeiculoList extends TPage
+class AnimalList extends TPage
 {
     protected $form;
     protected $datagrid;
@@ -31,51 +31,39 @@ class VeiculoList extends TPage
         parent::__construct();
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Veiculo');
+        $this->setActiveRecord('Animal');
         $this-> setDefaultOrder('id', 'asc');
-        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=veiculo.pessoa_id)');
+        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=animal.pessoa_id)');
         $this->setLimit(10);
 
-        $this->addFilterField('id', '=', 'id');        
-        $this->addFilterField('placa', '=', 'placa');
-        $this->addFilterField('marca', 'like', 'marca');
+        $this->addFilterField('id', '=', 'id'); 
+        $this->addFilterField('nome', 'like', 'nome');
 
-        $this->form = new BootstrapFormBuilder('form_search_Veiculo');
-        $this->form->setFormTitle('Veiculos');
+        $this->form = new BootstrapFormBuilder('form_search_Animal');
+        $this->form->setFormTitle('Animal');
 
         $id = new TEntry('id');
-        $placa = new TEntry('placa');
-        $marca = new TEntry('marca');
-        $modelo = new TEntry('modelo');
-        $cor = new TEntry('cor');
-        $ano_modelo = new TEntry('ano_modelo');
+        $nome = new TEntry('nome');
+        $observacao = new TEntry('observacao');
         $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'nome');
         $pessoa_id->setMinLength(0);
-        //$pessoa_id->setMask('nome'); 
-        $placa->forceUpperCase();
-        $marca->forceUpperCase();      
+        $nome->forceUpperCase();     
 
         $this->form->addFields([ new TLabel('Id') ], [ $id]);
-        $this->form->addFields([ new TLabel('Placa') ], [ $placa]);
-        $this->form->addFields([ new TLabel('Marca') ], [ $marca]);
-        $this->form->addFields([ new TLabel('Modelo') ], [ $modelo]);
-        $this->form->addFields([ new TLabel('cor') ], [ $cor]);
-        $this->form->addFields([ new TLabel('Ano Modelo') ], [ $ano_modelo]);
+        $this->form->addFields([ new TLabel('Nome') ], [ $nome]);
+        $this->form->addFields([ new TLabel('Observação') ], [ $observacao]);
         $this->form->addFields([ new TLabel('Pessoa') ], [ $pessoa_id]);
 
         $id->setSize('100%');
-        $placa->setSize('100%');
-        $marca->setSize('100%');
-        $modelo->setSize('100%');
-        $cor->setSize('100%');
-        $ano_modelo->setSize('100%');
+        $nome->setSize('100%');
+        $observacao->setSize('100%');
         $pessoa_id->setSize('100%');
 
         $this->form->setData( TSession::getValue(__CLASS__.'_filter_data') );
 
         $btn = $this->form->addAction(_t('Find'), new TAction([ $this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['VeiculoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
+        $this->form->addActionLink(_t('New'), new TAction(['AnimalForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
 
         //Cria datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
@@ -85,24 +73,24 @@ class VeiculoList extends TPage
 
         //Criar as colunas
         $column_id = new TDataGridColumn('id', 'Id', 'center', '10%');
-        $column_placa = new TDataGridColumn('placa', 'Placa', 'left');
-        $column_marca = new TDataGridColumn('marca', 'Marca', 'center', '10%');
-        $column_pessoa_id = new TDataGridColumn('{pessoa->nome}', 'Pessoa', 'center', '10%');
+        $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
+        $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
+        $column_pessoa_id = new TDataGridColumn('{pessoa->nome}', 'Pessoa', 'left');
 
-        $column_placa->enableAutoHide(500);
+        $column_nome->enableAutoHide(500);
         $column_pessoa_id->enableAutoHide(500);
 
         $this->datagrid->addColumn($column_id);
-        $this->datagrid->addColumn($column_placa);
-        $this->datagrid->addColumn($column_marca);
+        $this->datagrid->addColumn($column_nome);
+        $this->datagrid->addColumn($column_observacao);
         $this->datagrid->addColumn($column_pessoa_id);
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
-        $column_placa->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
-        $column_marca->setAction(new TAction([$this, 'onReload']), ['order' => 'codigo_ibge']);
+        $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
+        $column_observacao->setAction(new TAction([$this, 'onReload']), ['order' => 'codigo_ibge']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'estado->nome']);
 
-        $action1 = new TDataGridAction(['VeiculoForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
+        $action1 = new TDataGridAction(['AnimalForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
