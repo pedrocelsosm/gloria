@@ -9,6 +9,7 @@ use Adianti\Widget\Datagrid\TDataGrid;
 use Adianti\Widget\Datagrid\TDataGridAction;
 use Adianti\Widget\Datagrid\TDataGridColumn;
 use Adianti\Widget\Datagrid\TPageNavigation;
+use Adianti\Widget\Form\TDate;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TLabel;
 use Adianti\Widget\Util\TDropDown;
@@ -16,7 +17,7 @@ use Adianti\Widget\Wrapper\TDBUniqueSearch;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-class VeiculoList extends TPage
+class EleicaoList extends TPage
 {
     protected $form;
     protected $datagrid;
@@ -31,79 +32,84 @@ class VeiculoList extends TPage
         parent::__construct();
 
         $this->setDatabase('db_condominio');
-        $this->setActiveRecord('Veiculo');
+        $this->setActiveRecord('Eleicao');
         $this-> setDefaultOrder('id', 'asc');
-        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=veiculo.pessoa_id)');
+        $this->setOrderCommand('pessoa->nome', '(SELECT nome FROM pessoa WHERE id=eleicao.pessoa_id)');
         $this->setLimit(10);
 
         $this->addFilterField('id', '=', 'id');        
-        $this->addFilterField('placa', '=', 'placa');
-        $this->addFilterField('marca', 'like', 'marca');
+        $this->addFilterField('pessoa_id', '=', 'pessoa_id');
+        $this->addFilterField('papel_id', '=', 'papel_id');
 
-        $this->form = new BootstrapFormBuilder('form_search_Veiculo');
-        $this->form->setFormTitle('Veículos');
+        $this->form = new BootstrapFormBuilder('form_search_Eleicao');
+        $this->form->setFormTitle('Eleição');
 
         $id = new TEntry('id');
-        $placa = new TEntry('placa');
-        $marca = new TEntry('marca');
-        $modelo = new TEntry('modelo');
-        $cor = new TEntry('cor');
-        $ano_modelo = new TEntry('ano_modelo');
         $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'nome');
-        $pessoa_id->setMinLength(0);
-        //$pessoa_id->setMask('nome'); 
-        $placa->forceUpperCase();
-        $marca->forceUpperCase();      
+        $pessoa_id->setMinLength(0); 
+        $papel_id = new TDBUniqueSearch('papel_id', 'db_condominio', 'Papel', 'id', 'nome');
+        $data_inicio = new TEntry('data_inicio');
+        $data_fim = new TEntry('data_fim');
+        $observacao = new TEntry('observacao');        
+        
 
         $this->form->addFields([ new TLabel('Id') ], [ $id]);
-        $this->form->addFields([ new TLabel('Placa') ], [ $placa]);
-        $this->form->addFields([ new TLabel('Marca') ], [ $marca]);
-        $this->form->addFields([ new TLabel('Modelo') ], [ $modelo]);
-        $this->form->addFields([ new TLabel('cor') ], [ $cor]);
-        $this->form->addFields([ new TLabel('Ano Modelo') ], [ $ano_modelo]);
         $this->form->addFields([ new TLabel('Pessoa') ], [ $pessoa_id]);
+        $this->form->addFields([ new TLabel('Papel') ], [ $papel_id]);
+        $this->form->addFields([ new TLabel('Data Início') ], [ $data_inicio]);
+        $this->form->addFields([ new TLabel('Data Fim') ], [ $data_fim]);
+        $this->form->addFields([ new TLabel('Observação') ], [ $observacao]);
 
         $id->setSize('100%');
-        $placa->setSize('100%');
-        $marca->setSize('100%');
-        $modelo->setSize('100%');
-        $cor->setSize('100%');
-        $ano_modelo->setSize('100%');
         $pessoa_id->setSize('100%');
+        $papel_id->setSize('100%');
+        $data_inicio->setSize('100%');
+        $data_fim->setSize('100%');
+        $observacao->setSize('100%');
 
         $this->form->setData( TSession::getValue(__CLASS__.'_filter_data') );
 
         $btn = $this->form->addAction(_t('Find'), new TAction([ $this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['VeiculoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
+        $this->form->addActionLink(_t('New'), new TAction(['EleicaoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
 
         //Cria datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width 100%';
-        //$this->datagrid->datatable = 'true';
-        //$this->datagrid->enablePopover('Popover', '<b>Nome: {nome}<br>Estado: {estado->nome}<br>UF: {estado->uf}</b>');
 
         //Criar as colunas
         $column_id = new TDataGridColumn('id', 'Id', 'center', '10%');
-        $column_placa = new TDataGridColumn('placa', 'Placa', 'left');
-        $column_marca = new TDataGridColumn('marca', 'Marca', 'left');
         $column_pessoa_id = new TDataGridColumn('{pessoa->nome}', 'Pessoa', 'left');
+        $column_papel_id = new TDataGridColumn('{papel->nome}', 'Papel', 'left');
+        $column_data_inicio = new TDataGridColumn('data_inicio', 'Data Início', 'left');
+        $column_data_fim = new TDataGridColumn('data_fim', 'Data Fim', 'left');
+        $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
 
-        $column_placa->enableAutoHide(500);
+        $column_papel_id->enableAutoHide(500);
         $column_pessoa_id->enableAutoHide(500);
 
         $this->datagrid->addColumn($column_id);
-        $this->datagrid->addColumn($column_placa);
-        $this->datagrid->addColumn($column_marca);
         $this->datagrid->addColumn($column_pessoa_id);
+        $this->datagrid->addColumn($column_papel_id);
+        $this->datagrid->addColumn($column_data_inicio);
+        $this->datagrid->addColumn($column_data_fim);
+        $this->datagrid->addColumn($column_observacao);
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
-        $column_placa->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
-        $column_marca->setAction(new TAction([$this, 'onReload']), ['order' => 'codigo_ibge']);
-        $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'estado->nome']);
+        $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);
+        $column_papel_id->setAction(new TAction([$this, 'onReload']), ['order' => 'papel->nome']);
 
-        $action1 = new TDataGridAction(['VeiculoForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
+        $action1 = new TDataGridAction(['EleicaoForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
+
+        //Convert data inicio no datagris
+        $column_data_inicio->setTransformer( function($value) {
+            return TDate::convertToMask($value, 'yyyy-mm-dd', 'dd/mm/yyyy');
+        });
+
+        $column_data_fim->setTransformer( function($value) {
+            return TDate::convertToMask($value, 'yyyy-mm-dd', 'dd/mm/yyyy');
+        });
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');
         $this->datagrid->addAction($action2, _t('Delete'), 'fa:trash red');
