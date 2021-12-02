@@ -35,6 +35,10 @@
         <action>EleicaoList</action>
         <icon>fas:vote-yea fa-fw #ffa500</icon>
       </menuitem>
+      <menuitem label="Cadastro Unidade">
+        <action>UnidadeList</action>
+        <icon>fas:adjust fa-fw #ffa500</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
