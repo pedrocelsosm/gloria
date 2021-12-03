@@ -90,7 +90,7 @@ class UnidadeForm extends TPage
         parent::add($container);
 
     }
-
+/*
     public static function onExitArea($param)
     {
         $fracao = $param['fracao'];
@@ -100,6 +100,8 @@ class UnidadeForm extends TPage
         {
             TTransaction::open('db_condominio');
             $objeto_format = new Unidade($area_util);
+            $objeto_format = new Unidade($area_total);
+            $objeto_format = new Unidade($fracao);
             
             $obj = new StdClass;
             $obj->area_util  = number_format($objeto_format->area_util, 2, ',', '.');            
@@ -112,7 +114,7 @@ class UnidadeForm extends TPage
             // does nothing
         }
     }
-
+*/
     public static function onClose($param)
     {
         TScript::create("Template.closeRightPanel()");
