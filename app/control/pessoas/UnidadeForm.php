@@ -43,7 +43,7 @@ class UnidadeForm extends TPage
         $papel_id->setMask('{nome}');
         $fracao = new TEntry('fracao');
         $area_util = new TEntry('area_util');
-        $area_total = new TEntry('area-total');
+        $area_total = new TEntry('area_total');
         $observacao = new TEntry('observacao');        
 
         $this->form->addFields([ new TLabel('Id')], [$id]);
@@ -63,6 +63,9 @@ class UnidadeForm extends TPage
         $descricao->addValidation('Descrição', new TRequiredValidator);
         
         $descricao->forceUpperCase();
+        $fracao->setNumericMask(9, ',', '.', true);
+        $area_util->setNumericMask(2, ',', '.', true);
+        $area_total->setNumericMask(2, ',', '.', true);
         
         $id->setSize('100%');
         $descricao->setSize('100%');

@@ -57,6 +57,10 @@
         <action>ContaList</action>
         <icon>fas:money-bill-alt fa-fw #00a9ff</icon>
       </menuitem>
+      <menuitem label="Contas a Pagar">
+        <action>ContaPagarList</action>
+        <icon>fab fa:apple-pay fa-fw #00a9ff</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">

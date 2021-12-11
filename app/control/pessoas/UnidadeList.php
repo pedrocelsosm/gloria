@@ -103,7 +103,7 @@ class UnidadeList extends TPage
         $column_papel_id = new TDataGridColumn('{papel->nome}', 'Papel', 'left');
         $column_fracao = new TDataGridColumn('fracao', 'Fração', 'left');
         $column_area_util = new TDataGridColumn('area_util', 'Área Útil', 'left');
-        $column_area_total = new TDataGridColumn('area_util', 'Área Útil', 'left');
+        $column_area_total = new TDataGridColumn('area_total', 'Área Total', 'left');
         $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
 
         $column_papel_id->enableAutoHide(500);
@@ -113,10 +113,30 @@ class UnidadeList extends TPage
         $this->datagrid->addColumn($column_descricao);
         $this->datagrid->addColumn($column_grupo_id);
         $this->datagrid->addColumn($column_pessoa_id);
-        $this->datagrid->addColumn($column_papel_id);        
+        $this->datagrid->addColumn($column_papel_id);
+        $this->datagrid->addColumn($column_fracao);        
         $this->datagrid->addColumn($column_area_util);
         $this->datagrid->addColumn($column_area_total);
         $this->datagrid->addColumn($column_observacao);
+
+        //Formata valor na datagrid
+        $format_value = function($value) {
+            if (is_numeric($value)) {
+                return number_format($value, 2, ',', '.');
+            }
+            return $value;
+        };
+        
+        $column_area_util->setTransformer( $format_value );
+        $column_area_total->setTransformer( $format_value );
+
+        $format_value_fracao = function($value_fracao) {
+            if (is_numeric($value_fracao)) {
+                return number_format($value_fracao, 8, ',', '.');
+            }
+            return $value_fracao;
+        };
+        $column_fracao->setTransformer( $format_value_fracao );
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);
