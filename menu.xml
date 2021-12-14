@@ -59,7 +59,11 @@
       </menuitem>
       <menuitem label="Contas a Pagar">
         <action>ContaPagarList</action>
-        <icon>fab fa:apple-pay fa-fw #00a9ff</icon>
+        <icon>fas:money-bill fa-fw #FF5722</icon>
+      </menuitem>
+      <menuitem label="Contas a Receber">
+        <action>ContaReceberList</action>
+        <icon>fas:cash-register fa-fw #009688</icon>
       </menuitem>
     </menu>
   </menuitem>
