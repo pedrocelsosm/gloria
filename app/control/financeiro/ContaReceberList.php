@@ -90,7 +90,7 @@ class ContaReceberList extends TPage
             if($valor =="Liquidado")
             {
                 return "<div style='background-color:green; color:white;
-                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Quitado</div>";
+                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Liquidado</div>";
             }
             else if($valor =="Pendente")
             {

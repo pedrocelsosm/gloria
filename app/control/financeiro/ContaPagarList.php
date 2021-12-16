@@ -85,6 +85,25 @@ class ContaPagarList extends TPage
         $column_saldo = new TDataGridColumn('saldo', 'Saldo', 'left');
         $column_status = new TDataGridColumn('status', 'Status', 'left');
 
+        $column_status->setTransformer(function ($valor)
+        {
+            if($valor =="Liquidado")
+            {
+                return "<div style='background-color:green; color:white;
+                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Liquidado</div>";
+            }
+            else if($valor =="Pendente")
+            {
+                return "<div style='background-color:red; color:white;
+                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Pendente</div>";
+            }
+            else if($valor =="Parcelado")
+            {
+                return "<div style='background-color:orange; color:white;
+                border-radius: 2px 2px 2px 2px; font-weight:bold;text-align:center;'>Parcelado</div>";
+            }
+        });
+
         $column_conta_id->enableAutoHide(500);
         $column_pessoa_id->enableAutoHide(500);
 
@@ -110,6 +129,7 @@ class ContaPagarList extends TPage
         
         $column_valor->setTransformer( $format_value );
         $column_valor_pago->setTransformer( $format_value );
+        $column_saldo->setTransformer( $format_value );
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);

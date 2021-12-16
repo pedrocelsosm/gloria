@@ -4,6 +4,7 @@ use Adianti\Control\TAction;
 use Adianti\Control\TPage;
 use Adianti\Validator\TRequiredValidator;
 use Adianti\Widget\Container\TVBox;
+use Adianti\Widget\Form\TCombo;
 use Adianti\Widget\Form\TDate;
 use Adianti\Widget\Form\TEntry;
 use Adianti\Widget\Form\TLabel;
@@ -44,7 +45,11 @@ class ContaPagarForm extends TPage
         $observacao = new TEntry('observacao');
         $pessoa_id = new TDBUniqueSearch('pessoa_id', 'db_condominio', 'Pessoa', 'id', 'nome');
         $saldo = new TEntry('saldo');
-        $status = new TEntry('status');                
+        $status = new TCombo('status');
+        $status->addItems(['Liquidado' => 'Liquidado', 'Parcelado' => 'Parcelado', 'Pendente' => 'Pendente']);
+        
+        // Chama o método onSaldo
+        $saldo->setExitAction(new TAction(array($this, 'onSaldo')));
 
         $this->form->addFields([ new TLabel('Id')], [$id]);
         $this->form->addFields([ new TLabel('Conta')], [$conta_id]);
@@ -55,16 +60,25 @@ class ContaPagarForm extends TPage
         $this->form->addFields([ new TLabel('Valor Pago')], [$valor_pago]);
         $this->form->addFields([ new TLabel('Observação')], [$observacao]);
         $this->form->addFields([ new TLabel('Pessoa')], [$pessoa_id]);
-        $this->form->addFields([ new TLabel('Saldo')], [$saldo]);
+        $this->form->addFields([ new TLabel('Juros')], [$saldo]);
         $this->form->addFields([ new TLabel('Status')], [$status]);
+
+        // set exit action for input_exit
+        $exit_action = new TAction(array($this, 'onExitAction'));
+        $valor->setExitAction($exit_action);
+        $data_pagamento->setExitAction($exit_action);
 
         $data_vencimento->setMask('dd/mm/yyyy');
         $data_vencimento->setDatabaseMask('yyyy-mm-dd');
         $data_pagamento->setMask('dd/mm/yyyy');
         $data_pagamento->setDatabaseMask('yyyy-mm-dd');
 
+        $saldo->setEditable(FALSE);
+        $valor_pago->setEditable(FALSE);
+
         $valor->setNumericMask(2, ',', '.', true);
         $valor_pago->setNumericMask(2, ',', '.', true);
+        $saldo->setNumericMask(2, ',', '.', true);
 
         $pessoa_id->addValidation('Pessoa', new TRequiredValidator);
         $conta_id->addValidation('Conta', new TRequiredValidator);
@@ -98,6 +112,47 @@ class ContaPagarForm extends TPage
         parent::add($container);
 
     }
+
+    public static function onSaldo($param)
+    {   
+        $valor = (double) str_replace(['.', ','], ['', '.'], $param['valor']);
+        $data_vencimento = $param['data_vencimento'];
+        $data_pagamento = $param['data_pagamento'];
+        
+        $object = new StdClass;
+        
+        if ($data_pagamento > $data_vencimento)
+        {
+        
+        $multa = 2/100;
+        $data_pagamento = new DateTime(TDate::date2us($data_pagamento));
+        $data_vencimento = new DateTime(TDate::date2us($data_vencimento));
+        $tempo = $data_pagamento->diff($data_vencimento);
+        $meses = $tempo->y * 12 + $tempo->m;
+        
+        $object->saldo = ($valor * pow(1+1/100, $meses) - $valor)+($valor * $multa);
+        $object->saldo = number_format($object->saldo, 2, ',', '.');        
+        $object->valor_pago = $valor + $object->saldo;
+        $object->valor_pago = number_format($object->valor_pago, 2, ',', '.');
+        }
+        else
+        {   
+            $object->valor_pago = $object->valor;
+            $object->saldo = NULL;
+        }
+
+        TForm::sendData('form_ContaPagar', $object);
+    }
+    
+    public static function onExitAction($param)
+    {
+        $obj = new StdClass;
+        $obj->valor_pago = $param['valor_pago'];
+        $obj->saldo      = $param['saldo'];
+             
+        TForm::sendData('form_ContaPagar', $obj);
+    }
+
     public static function onClose($param)
     {
         TScript::create("Template.closeRightPanel()");
