@@ -65,7 +65,7 @@ class ContaPagarForm extends TPage
 
         // set exit action for input_exit
         $exit_action = new TAction(array($this, 'onExitAction'));
-        $valor->setExitAction($exit_action);
+        //$valor->setExitAction($exit_action);
         $data_pagamento->setExitAction($exit_action);
 
         $data_vencimento->setMask('dd/mm/yyyy');
@@ -77,8 +77,8 @@ class ContaPagarForm extends TPage
         $valor_pago->setEditable(FALSE);
 
         $valor->setNumericMask(2, ',', '.', true);
-        $valor_pago->setNumericMask(2, ',', '.', true);
-        $saldo->setNumericMask(2, ',', '.', true);
+        //$valor_pago->setNumericMask(2, ',', '.', true);
+        //$saldo->setNumericMask(2, ',', '.', true);
 
         $pessoa_id->addValidation('Pessoa', new TRequiredValidator);
         $conta_id->addValidation('Conta', new TRequiredValidator);
@@ -131,14 +131,14 @@ class ContaPagarForm extends TPage
         $meses = $tempo->y * 12 + $tempo->m;
         
         $object->saldo = ($valor * pow(1+1/100, $meses) - $valor)+($valor * $multa);
-        $object->saldo = number_format($object->saldo, 2, ',', '.');        
+        $object->saldo = number_format($object->saldo, 2, '.', '');        
         $object->valor_pago = $valor + $object->saldo;
-        $object->valor_pago = number_format($object->valor_pago, 2, ',', '.');
+        $object->valor_pago = number_format($object->valor_pago, 2, '.', '');
         }
         else
         {   
             $object->valor_pago = $object->valor;
-            $object->saldo = NULL;
+            $object->saldo = 0.00;
         }
 
         TForm::sendData('form_ContaPagar', $object);

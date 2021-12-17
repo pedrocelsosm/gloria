@@ -44,7 +44,10 @@ class ContaReceberForm extends TPage
         $juros_recebido = new TEntry('juros_recebido');
         $status = new TCombo('status');
         $status->addItems(['Liquidado' => 'Liquidado', 'Pendente' => 'Pendente', 'Parcelado' => 'Parcelado']);
-        $observacao = new TEntry('observacao');                       
+        $observacao = new TEntry('observacao');
+        
+        // Chama o método onJuroRecebido
+        $valor_recebido->setExitAction(new TAction(array($this, 'onJuroRecebido')));
 
         $this->form->addFields([ new TLabel('Id')], [$id]);
         $this->form->addFields([ new TLabel('Documento')], [$documento]);
@@ -56,7 +59,12 @@ class ContaReceberForm extends TPage
         $this->form->addFields([ new TLabel('Valor Recebido')], [$valor_recebido]);
         $this->form->addFields([ new TLabel('Juros Recebido')], [$juros_recebido]);
         $this->form->addFields([ new TLabel('Status')], [$status]);
-        $this->form->addFields([ new TLabel('Observação')], [$observacao]);        
+        $this->form->addFields([ new TLabel('Observação')], [$observacao]);
+        
+        // set exit action for input_exit
+        $exit_action = new TAction(array($this, 'onExitAction'));
+        $valor->setExitAction($exit_action);
+        $data_recebimento->setExitAction($exit_action);
 
         $data_vencimento->setMask('dd/mm/yyyy');
         $data_vencimento->setDatabaseMask('yyyy-mm-dd');
@@ -64,8 +72,11 @@ class ContaReceberForm extends TPage
         $data_recebimento->setDatabaseMask('yyyy-mm-dd');
 
         $valor->setNumericMask(2, ',', '.', true);
-        $valor_recebido->setNumericMask(2, ',', '.', true);
-        $juros_recebido->setNumericMask(2, ',', '.', true);
+        //$valor_recebido->setNumericMask(2, ',', '.', true);
+        //$juros_recebido->setNumericMask(2, ',', '.', true);
+
+        $valor_recebido->setEditable(FALSE);
+        $juros_recebido->setEditable(FALSE);
 
         $pessoa_id->addValidation('Pessoa', new TRequiredValidator);
         $conta_id->addValidation('Conta', new TRequiredValidator);
@@ -99,6 +110,46 @@ class ContaReceberForm extends TPage
         parent::add($container);
 
     }
+
+    public static function onJuroRecebido($param)
+    { 
+        $valor = (double) str_replace(['.', ','], ['', '.'], $param['valor']);
+        $data_vencimento = $param['data_vencimento'];
+        $data_recebimento = $param['data_recebimento'];
+        
+        $object = new StdClass;
+       
+        if ($data_recebimento > $data_vencimento)
+        {        
+        $multa = 2/100;
+        $data_recebimento = new DateTime(TDate::date2us($data_recebimento));
+        $data_vencimento = new DateTime(TDate::date2us($data_vencimento));
+        $tempo = $data_recebimento->diff($data_vencimento);
+        $meses = $tempo->y * 12 + $tempo->m;
+        
+        $object->juros_recebido  = ($valor * pow(1+1/100, $meses) - $valor)+($valor * $multa);
+        $object->juros_recebido  = number_format($object->juros_recebido, 2, '.', '');        
+        $object->valor_recebido = $valor + $object->juros_recebido;
+        $object->valor_recebido = number_format($object->valor_recebido, 2, '.', '');
+        }
+        else
+        {  
+            $object->valor_recebido = $valor;
+            $object->juros_recebido  = 0.00;
+        }
+
+        TForm::sendData('form_ContaReceber', $object);
+    }
+    
+    public static function onExitAction($param)
+    {
+        $obj = new StdClass;
+        $obj->valor_recebido = $param['valor_recebido'];
+        $obj->juros_recebido  = $param['juros_recebido'];
+             
+        TForm::sendData('form_ContaReceber', $obj);
+    }
+
     public static function onClose($param)
     {
         TScript::create("Template.closeRightPanel()");
