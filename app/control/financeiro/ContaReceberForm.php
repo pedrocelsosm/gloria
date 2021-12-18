@@ -46,7 +46,7 @@ class ContaReceberForm extends TPage
         $status->addItems(['Liquidado' => 'Liquidado', 'Pendente' => 'Pendente', 'Parcelado' => 'Parcelado']);
         $observacao = new TEntry('observacao');
         
-        // Chama o método onSaldo
+        //Chama o método onSaldo
         $valor_recebido->setExitAction(new TAction(array($this, 'onJuroRecebido')));
 
         $this->form->addFields([ new TLabel('Id')], [$id]);
