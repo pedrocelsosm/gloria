@@ -84,6 +84,34 @@ class ContaReceberList extends TPage
         $column_juros_recebido = new TDataGridColumn('juros_recebido', 'Juros Recebido', 'left');
         $column_status = new TDataGridColumn('status', 'Status', 'left');
         $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
+
+        //Método somar colunas datagrid
+        $column_valor->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
+
+        $column_valor_recebido->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
+
+        /* Metodo para transformar TCombo e cores
+        $column_status->setTransformer(function($value, $object, $row) { 
+            $lbl = new TLabel(''); 
+            if ($value == 'Liquidado') { 
+                $lbl->setValue('Liquidado'); 
+                $lbl->class = 'label label-success'; 
+            } 
+            elseif ($value == 'Pendente') { 
+                $lbl->setValue('Pendente'); 
+                $lbl->class = 'label label-danger'; 
+            }  
+            elseif ($value == 'Parcelado') { 
+                $lbl->setValue('Parcelado'); 
+                $lbl->class = 'label label-warning'; 
+            }  
+            return $lbl; 
+            });
+        */
         
         $column_status->setTransformer(function ($valor)
         {

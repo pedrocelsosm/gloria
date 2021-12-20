@@ -137,7 +137,7 @@ class ContaPagarForm extends TPage
         }
         else
         {   
-            $object->valor_pago = $object->valor;
+            $object->valor_pago = $valor;
             $object->saldo = 0.00;
         }
 
