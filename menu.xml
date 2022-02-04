@@ -65,10 +65,14 @@
         <action>ContaReceberList</action>
         <icon>fas:cash-register fa-fw #009688</icon>
       </menuitem>
+      <menuitem label="Dashboard">
+        <action>ContasDashboard</action>
+        <icon>fas:adjust fa-fw #ffa500</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">
-    <icon>fas:home fa-fw</icon>
+    <icon>fas:home fa-fw #FF9800</icon>
     <menu>
       <menuitem label="Dashboard">
         <action>SystemAdministrationDashboard</action>
