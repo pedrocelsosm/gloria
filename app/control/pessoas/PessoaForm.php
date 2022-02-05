@@ -169,8 +169,8 @@ class PessoaForm extends TWindow
 
             $this->form->setData($data);
             TTransaction::close();
-
-            new TMessage('info', _t('Record Save'));
+            
+            new TMessage('info',('Salvo com sucesso!'));
         }
         catch (Exception $e)
         {
