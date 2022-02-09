@@ -75,6 +75,15 @@
       </menuitem>
     </menu>
   </menuitem>
+  <menuitem label="Relatório">
+    <icon>fas:republican fa-fw #E91E63</icon>
+    <menu>
+      <menuitem label="Mensal">
+        <action>RelatorioContaPagar</action>
+        <icon>fas:adjust fa-fw #FF5722</icon>
+      </menuitem>
+    </menu>
+  </menuitem>
   <menuitem label="_t{Administration}">
     <icon>fas:home fa-fw #FF9800</icon>
     <menu>
