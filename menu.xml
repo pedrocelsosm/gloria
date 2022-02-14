@@ -86,9 +86,13 @@
         <action>RelatorioContaReceber</action>
         <icon>fas:adjust fa-fw #ffa500</icon>
       </menuitem>
-      <menuitem label="Cidade-Estado">
+      <menuitem label="Relatório Cidade-Estado">
         <action>RelatorioEstadoCidade</action>
         <icon>fas:city fa-fw #ffa500</icon>
+      </menuitem>
+      <menuitem label="Relatório Pessoa">
+        <action>RelatorioPessoa</action>
+        <icon>fas:address-card fa-fw #ffa500</icon>
       </menuitem>
     </menu>
   </menuitem>
