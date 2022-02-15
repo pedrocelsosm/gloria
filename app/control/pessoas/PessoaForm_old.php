@@ -166,11 +166,11 @@ class PessoaForm extends TWindow
                 
             }
             $data->id = $object->id;
-
-            $this->form->setData($data);
+            $this->form->setData($data);          
+            
             TTransaction::close();
-
-            new TMessage('info', _t('Record Save'));
+            
+            new TMessage('info',('Salvo com sucesso!'));
         }
         catch (Exception $e)
         {
@@ -178,8 +178,7 @@ class PessoaForm extends TWindow
             $this->form->setData( $this->form->getData());
             TTransaction::rollback();
         }
-
-        TApplication::loadPage('PessoaList', 'onReload', $param);
+        TApplication::loadPage('PessoaList','onReload',$param);       
     }
 
     public function onClear($param)
@@ -354,5 +353,5 @@ class PessoaForm extends TWindow
     public static function onClose()
     {
         parent::closeWindow();
-    }
+    }    
 }
