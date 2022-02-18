@@ -178,6 +178,7 @@ class PessoaForm extends TWindow
             $this->form->setData( $this->form->getData());
             TTransaction::rollback();
         }
+        TApplication::loadPage('PessoaList', 'onReload', $param); //Atualiza datagrid
     }
 
     public function onClear($param)
