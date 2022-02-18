@@ -78,7 +78,7 @@ class ContaList extends TPage
         $column_descricao->setAction(new TAction([$this, 'onReload']), ['order' => 'descricao']);
         $column_observacao->setAction(new TAction([$this, 'onReload']), ['order' => 'observacao']);
 
-        $action1 = new TDataGridAction(['EstadoForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
+        $action1 = new TDataGridAction(['ContaForm', 'onEdit'], ['id' => '{id}', 'register_state' => 'false']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
 
         $this->datagrid->addAction($action1, _t('Edit'), 'fa:edit blue');

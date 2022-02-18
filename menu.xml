@@ -65,6 +65,14 @@
         <action>ContaReceberList</action>
         <icon>fas:cash-register fa-fw #E91E63</icon>
       </menuitem>
+      <menuitem label="Dashboard">
+        <action>ContasDashboard</action>
+        <icon>fas:adjust fa-fw</icon>
+      </menuitem>
+      <menuitem label="Gerar Boleto">
+        <action>BoletoForm</action>
+        <icon>fas:bold fa-fw</icon>
+      </menuitem>
     </menu>
   </menuitem>
   <menuitem label="_t{Administration}">

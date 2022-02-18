@@ -59,7 +59,7 @@ class PessoaForm extends TWindow
         $cidade_id = new TDBCombo('cidade_id', 'db_condominio', 'Cidade', 'id', 'nome', 'nome', $filter);
         $grupo_id = new TDBUniqueSearch('grupo_id', 'db_condominio', 'Grupo', 'id', 'nome');
         $papeis_id = new TDBMultiSearch('papeis_id', 'db_condominio', 'Papel', 'id', 'nome');
-        $estado_id = new TDBCombo('estado_id', 'db_condominio', 'Estado', 'id', '{nome} {uf}');
+        $estado_id = new TDBCombo('estado_id', 'db_condominio', 'Estado', 'id', '{nome} ({uf})');
 
         $estado_id->setChangeAction(new TAction([$this, 'onChangeEstado']));
         $cep->setExitAction(new TAction([$this, 'onExitCep']));
@@ -170,7 +170,7 @@ class PessoaForm extends TWindow
             $this->form->setData($data);
             TTransaction::close();
 
-            new TMessage('info', _t('Record Save'));
+            new TMessage('info', ('Registro Salvo'));
         }
         catch (Exception $e)
         {

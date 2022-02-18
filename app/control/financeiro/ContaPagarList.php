@@ -85,6 +85,16 @@ class ContaPagarList extends TPage
         $column_saldo = new TDataGridColumn('saldo', 'Saldo', 'left');
         $column_status = new TDataGridColumn('status', 'Status', 'left');
 
+        //Faz a soma das colunas Valor e Valor Pago
+        $column_valor->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
+
+        $column_valor_pago->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
+
+
         $column_status->setTransformer(function ($valor)
         {
             if($valor =="Liquidado")
@@ -129,7 +139,9 @@ class ContaPagarList extends TPage
         
         $column_valor->setTransformer( $format_value );
         $column_valor_pago->setTransformer( $format_value );
-        $column_saldo->setTransformer( $format_value );
+        $column_saldo->setTransformer( $format_value );        
+        $column_valor->setTransformer($format_value);
+        $column_valor_pago->setTransformer($format_value);
 
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_pessoa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pessoa->nome']);

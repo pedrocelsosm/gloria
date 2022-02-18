@@ -84,6 +84,15 @@ class ContaReceberList extends TPage
         $column_juros_recebido = new TDataGridColumn('juros_recebido', 'Juros Recebido', 'left');
         $column_status = new TDataGridColumn('status', 'Status', 'left');
         $column_observacao = new TDataGridColumn('observacao', 'Observação', 'left');
+
+        //Faz a soma das colunas Valor e Valor Pago
+        $column_valor->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
+
+        $column_valor_recebido->setTotalFunction( function($values) {
+            return array_sum((array) $values);
+        });
         
         $column_status->setTransformer(function ($valor)
         {
